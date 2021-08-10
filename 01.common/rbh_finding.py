@@ -35,21 +35,27 @@ def fetch_hits(filename):
     return hits
 
 
-def main():
-    parser = get_parser()
-    args = parser.parse_args()
-    input1, input2 = args.input_first, args.input_second
+def fetch_rbh(input1, input2):
     # input1 and input2 are two blastp results from diamond blastp
     # Caution: use "-k 1" to pick up the best hit
-    # print(fetch_hits(input1))
     hits1 = fetch_hits(input1)
     hits2 = fetch_hits(input2)
     output = []
     for hit in hits1:
         if hits1[hit] in hits2:
             output.append('\t'.join([hit, hits1[hit]]))
+    return output
+
+
+def main():
+    parser = get_parser()
+    args = parser.parse_args()
+    input1, input2 = args.input_first, args.input_second
+    output = fetch_rbh(input1, input2)
     with open('rbh.tsv', mode='w') as file:
         file.writelines('\n'.join(output))
+
+    return 0
 
 
 if __name__ == '__main__':
