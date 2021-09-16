@@ -22,6 +22,10 @@ def get_parser():
                         required=True, help="one of blastp result")
     parser.add_argument('-i_second', '--input_second', type=str,
                         required=True, help="the other of balstp result")
+    parser.add_argument('-gff_first', '--gff_first', type=str,
+                        required=False, help="the gff annotation of first species")
+    parser.add_argument('-gff_second', '--gff_second', type=str,
+                        required=False, help="the gff annotation of second species")
     return parser
 
 
@@ -42,7 +46,7 @@ def fetch_rbh(input1, input2):
     hits2 = fetch_hits(input2)
     output = []
     for hit in hits1:
-        if hits1[hit] in hits2: # key condition
+        if hits1[hit] in hits2:  # key condition
             output.append('\t'.join([hit, hits1[hit]]))
     return output
 
