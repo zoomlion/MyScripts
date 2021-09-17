@@ -52,6 +52,7 @@ def fetch_rbh(input1, input2):
 
 
 def main():
+
     parser = get_parser()
     args = parser.parse_args()
     input1, input2 = args.input_first, args.input_second
@@ -59,6 +60,39 @@ def main():
     with open('rbh.tsv', mode='w') as file:
         file.writelines('\n'.join(output))
 
+    if args.gff_first is not None and args.gff_second is not None:
+        transcripts_first, transcripts_second = {}, {}
+        with open(args.gff_first) as gff_first:
+            lines = gff_first.readlines()
+            for line in lines:
+                key = re.match(r'^[^\n]+ID=transcript:(\w+)', line)
+                result = re.match(r'(^[\w\.]+)\t\w+\tmRNA\t(\w+)\t(\w+)', line)
+                if key and result:
+                    transcripts_first[key.group(1)] = \
+                        [result.group(1), result.group(2), result.group(3)]
+        with open(args.gff_second) as gff_second:
+            lines = gff_second.readlines()
+            for line in lines:
+                key = re.match(r'^[^\n]+ID=transcript:(\w+)', line)
+                result = re.match(r'(^[\w\.]+)\t\w+\tmRNA\t(\w+)\t(\w+)', line)
+                if key and result:
+                    transcripts_second[key.group(1)] = \
+                        [result.group(1), result.group(2), result.group(3)]
+    else:
+        return 0
+    loci = []
+    for item in output:
+        if item.split('\t')[0] in transcripts_first:
+            loci.append(item.split('\t')[
+                        0] + '\t' + '\t'.join(transcripts_first[item.split('\t')[0]]) + '\t')
+        if item.split('\t')[1] in transcripts_second:
+            loci.append(item.split('\t')[
+                        1] + '\t' + '\t'.join(transcripts_second[item.split('\t')[1]]) + '\n')
+    for item in loci:
+        print(item)
+    with open("rbh_loci.tsv", mode='w') as file:
+        file.writelines(loci)
+    print("Caution: If not output with site info, try to switch the order of gff")
     return 0
 
 
