@@ -58,7 +58,7 @@ def main():
     input1, input2 = args.input_first, args.input_second
     output = fetch_rbh(input1, input2)
     with open('rbh.tsv', mode='w') as file:
-        file.writelines('\n'.join(output))
+        file.writelines('\n'.join(output) + '\n')
 
     if args.gff_first is not None and args.gff_second is not None:
         transcripts_first, transcripts_second = {}, {}
