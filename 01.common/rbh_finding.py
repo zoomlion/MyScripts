@@ -46,7 +46,7 @@ def fetch_rbh(input1, input2):
     hits2 = fetch_hits(input2)
     output = []
     for hit in hits1:
-        if hits1[hit] in hits2:  # key condition
+        if hits1[hit] in hits2 and hit == hits2[hits1[hit]]:  # key condition
             output.append('\t'.join([hit, hits1[hit]]))
     return output
 
