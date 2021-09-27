@@ -22,6 +22,7 @@ if len(argv) < 3:
 
 def main():
     back_list = []
+    transcript_list = []
     with open(file=argv[1]) as input:
         lines = input.readlines()
         for line in lines:
@@ -33,10 +34,17 @@ def main():
                 back_str = '\t'.join(
                     [info[0], info[3], info[4], gene_name]) + '\n'
                 back_list.append(back_str)
-                print(back_str)
+                # print(back_str)
+            if info[2] == "mRNA":
+                transcript_name = re.match(r'ID=transcript:(\w+);', info[8]).group(1)
+                back_str = '\t'.join(
+                    [info[0], info[3], info[4], transcript_name]) + '\n'
+                transcript_list.append(back_str)
     with open(file=argv[2], mode='w') as output:
         output.writelines(back_list)
-
+    with open(file=argv[2]+'.transcripts', mode='w') as trans:
+        trans.writelines(transcript_list)
+    
 
 if __name__ == "__main__":
     main()
